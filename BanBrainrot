@@ -1,0 +1,74 @@
+-- LocalScript (StarterPlayerScripts)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local UserInputService = game:GetService("UserInputService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "SellGui"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = playerGui
+
+-- Frame (KÉO ĐƯỢC)
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 120, 0, 50)
+frame.Position = UDim2.new(0.5, -60, 0.1, 0)
+frame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+frame.Active = true  -- QUAN TRỌNG!
+frame.Draggable = true  -- KÉO SIÊU DỄ!
+frame.Parent = screenGui
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 8)
+corner.Parent = frame
+
+-- Nút SELL TO ĐỔ!
+local sellButton = Instance.new("TextButton")
+sellButton.Size = UDim2.new(1, -10, 1, -10)
+sellButton.Position = UDim2.new(0, 5, 0, 5)
+sellButton.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+sellButton.Text = "SELL"
+sellButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+sellButton.Font = Enum.Font.GothamBold
+sellButton.TextSize = 20
+sellButton.AutoButtonColor = false
+sellButton.Parent = frame
+
+local btnCorner = Instance.new("UICorner")
+btnCorner.CornerRadius = UDim.new(0, 6)
+btnCorner.Parent = sellButton
+
+-- REMOTE
+local remote = ReplicatedStorage:WaitForChild("Packages"):WaitForChild("Net"):WaitForChild("RE/PlotService/Sell")
+local args = {1}
+
+-- Hiệu ứng hover
+sellButton.MouseEnter:Connect(function()
+	sellButton.BackgroundColor3 = Color3.fromRGB(0, 220, 0)
+end)
+
+sellButton.MouseLeave:Connect(function()
+	sellButton.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+end)
+
+-- CLICK = SELL 1 LẦN
+sellButton.MouseButton1Click:Connect(function()
+	sellButton.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
+	sellButton.Text = "SOLD!"
+	
+	pcall(function()
+		remote:FireServer(unpack(args))
+	end)
+	
+	print("🔥 SELL FIRED!")
+	
+	wait(0.3)
+	sellButton.Text = "SELL"
+	sellButton.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+end)
+
+print("✅ SELL GUI LOADED - KÉO FRAME ĐỂ DI CHUYỂN!")
